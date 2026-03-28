@@ -1,0 +1,548 @@
+openapi: 3.1.0
+info:
+  title: IVT Playground API
+  version: 1.0.0
+  summary: HTTP and WebSocket API for the SQL seminar platform
+  description: |
+    Серверный API платформы "Игровая площадка ИВТ".
+
+    Документ описывает публичные точки входа, которые использует frontend:
+    - health-check
+    - логин преподавателя и студента
+    - bootstrap текущей сессии
+    - reset стенда
+    - action endpoint для рабочих команд UI
+    - WebSocket канал live-обновлений
+servers:
+  - url: http://localhost:3001
+    description: Local development
+  - url: https://seminar.example.com
+    description: Production example
+tags:
+  - name: System
+  - name: Auth
+  - name: Runtime
+  - name: Actions
+  - name: Realtime
+paths:
+  /api/health:
+    get:
+      tags: [System]
+      summary: Health-check backend
+      operationId: healthCheck
+      responses:
+        '200':
+          description: Backend is healthy
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  ok:
+                    type: boolean
+                required: [ok]
+  /api/openapi.yaml:
+    get:
+      tags: [System]
+      summary: Raw OpenAPI specification
+      operationId: getOpenApiSpec
+      responses:
+        '200':
+          description: YAML specification
+          content:
+            application/yaml:
+              schema:
+                type: string
+  /api/docs:
+    get:
+      tags: [System]
+      summary: Human-readable API reference page
+      operationId: getApiDocsPage
+      responses:
+        '200':
+          description: HTML documentation page
+          content:
+            text/html:
+              schema:
+                type: string
+  /api/auth/login:
+    post:
+      tags: [Auth]
+      summary: Login as teacher/admin or student
+      operationId: login
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              oneOf:
+                - $ref: '#/components/schemas/TeacherLoginRequest'
+                - $ref: '#/components/schemas/StudentLoginRequest'
+      responses:
+        '200':
+          description: Authenticated session
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LoginResponse'
+        '400':
+          $ref: '#/components/responses/ErrorResponse'
+        '401':
+          $ref: '#/components/responses/ErrorResponse'
+        '429':
+          $ref: '#/components/responses/ErrorResponse'
+  /api/bootstrap:
+    get:
+      tags: [Runtime]
+      summary: Restore current runtime and catalog for an authenticated user
+      operationId: bootstrap
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Runtime restored
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RuntimeResponse'
+        '401':
+          $ref: '#/components/responses/ErrorResponse'
+  /api/reset:
+    post:
+      tags: [Runtime]
+      summary: Reset platform state to seed
+      description: Доступно только преподавателю или администратору.
+      operationId: resetPlatform
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Runtime reset
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RuntimeResponse'
+        '401':
+          $ref: '#/components/responses/ErrorResponse'
+        '403':
+          $ref: '#/components/responses/ErrorResponse'
+  /api/actions/{action}:
+    post:
+      tags: [Actions]
+      summary: Execute one UI action
+      description: |
+        Универсальная точка входа для команд интерфейса. Тело зависит от `action`.
+
+        Поддерживаемые значения:
+        - save-draft
+        - select-seminar
+        - select-task
+        - toggle-setting
+        - toggle-seminar-status
+        - pick-student
+        - update-seminar-meta
+        - create-seminar
+        - create-task
+        - assign-task
+        - remove-task
+        - create-group
+        - update-group
+        - delete-group
+        - create-user
+        - update-user
+        - delete-user
+        - select-playground-template
+        - select-playground-dataset
+        - select-challenge
+        - run-seminar-query
+        - submit-seminar-query
+        - run-playground-query
+        - validate-playground-challenge
+        - import-template
+      operationId: performAction
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: action
+          in: path
+          required: true
+          schema:
+            type: string
+            enum:
+              - save-draft
+              - select-seminar
+              - select-task
+              - toggle-setting
+              - toggle-seminar-status
+              - pick-student
+              - update-seminar-meta
+              - create-seminar
+              - create-task
+              - assign-task
+              - remove-task
+              - create-group
+              - update-group
+              - delete-group
+              - create-user
+              - update-user
+              - delete-user
+              - select-playground-template
+              - select-playground-dataset
+              - select-challenge
+              - run-seminar-query
+              - submit-seminar-query
+              - run-playground-query
+              - validate-playground-challenge
+              - import-template
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: true
+            examples:
+              selectSeminar:
+                summary: Select seminar
+                value:
+                  seminarId: seminar-sql-bootcamp
+              runSeminarQuery:
+                summary: Run SQL in seminar
+                value:
+                  taskId: task-revenue
+                  sqlText: SELECT 1;
+              createUser:
+                summary: Create teacher
+                value:
+                  role: teacher
+                  fullName: Ivan Petrov
+                  login: ipetrov
+                  password: secret-password
+      responses:
+        '200':
+          description: Updated runtime and catalog
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RuntimeResponse'
+        '400':
+          $ref: '#/components/responses/ErrorResponse'
+        '401':
+          $ref: '#/components/responses/ErrorResponse'
+        '403':
+          $ref: '#/components/responses/ErrorResponse'
+        '429':
+          $ref: '#/components/responses/ErrorResponse'
+  /ws:
+    get:
+      tags: [Realtime]
+      summary: WebSocket channel for live updates
+      operationId: websocketState
+      description: |
+        Подключение: `ws://host/ws?token=JWT`
+
+        Сервер отправляет сообщения вида:
+        ```json
+        {
+          "type": "state:update",
+          "catalog": { ... },
+          "runtime": { ... }
+        }
+        ```
+      parameters:
+        - name: token
+          in: query
+          required: true
+          schema:
+            type: string
+      responses:
+        '101':
+          description: Switching Protocols
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  responses:
+    ErrorResponse:
+      description: Error
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+            required: [error]
+  schemas:
+    TeacherLoginRequest:
+      type: object
+      properties:
+        mode:
+          type: string
+          enum: ['', teacher]
+        login:
+          type: string
+        password:
+          type: string
+      required: [login, password]
+    StudentLoginRequest:
+      type: object
+      properties:
+        mode:
+          type: string
+          enum: [student]
+        surname:
+          type: string
+      required: [mode, surname]
+    User:
+      type: object
+      properties:
+        id: { type: string }
+        fullName: { type: string }
+        login: { type: string }
+        passwordHash:
+          type: string
+          description: Всегда пустая строка в клиентском ответе
+        role:
+          type: string
+          enum: [student, teacher, admin]
+        groupId: { type: string }
+        createdAt: { type: string, format: date-time }
+    Group:
+      type: object
+      properties:
+        id: { type: string }
+        title: { type: string }
+        stream: { type: string }
+    SeminarSettings:
+      type: object
+      properties:
+        leaderboardEnabled: { type: boolean }
+        autoValidationEnabled: { type: boolean }
+        notificationsEnabled: { type: boolean }
+        diagnosticsVisible: { type: boolean }
+        referenceSolutionVisible: { type: boolean }
+        submissionsFrozen: { type: boolean }
+    Seminar:
+      type: object
+      properties:
+        id: { type: string }
+        title: { type: string }
+        description: { type: string }
+        groupId: { type: string }
+        teacherId: { type: string }
+        templateId: { type: string }
+        taskIds:
+          type: array
+          items: { type: string }
+        studentIds:
+          type: array
+          items: { type: string }
+        accessCode:
+          type: string
+          description: Для студента скрывается
+        startTime: { type: string, format: date-time }
+        endTime: { type: string, format: date-time }
+        status:
+          type: string
+          enum: [scheduled, live, closed]
+        settings:
+          $ref: '#/components/schemas/SeminarSettings'
+    ValidationConfig:
+      type: object
+      properties:
+        orderMatters: { type: boolean }
+        columnNamesMatter: { type: boolean }
+        numericTolerance: { type: number }
+        maxExecutionMs: { type: integer }
+        maxResultRows: { type: integer }
+        forbiddenKeywords:
+          type: array
+          items: { type: string }
+    TaskDefinition:
+      type: object
+      properties:
+        id: { type: string }
+        seminarId: { type: string }
+        title: { type: string }
+        description: { type: string }
+        difficulty:
+          type: string
+          enum: [easy, medium, hard]
+        taskType: { type: string }
+        constructs:
+          type: array
+          items: { type: string }
+        validationMode:
+          type: string
+          enum: [result-match, ddl-object, explain-plan]
+        templateId: { type: string }
+        datasetIds:
+          type: array
+          items: { type: string }
+        starterSql:
+          type: string
+          description: Для студента скрывается, если преподаватель не открыл референс
+        expectedQuery:
+          type: string
+          description: Для студента скрывается, если преподаватель не открыл референс
+        validationConfig:
+          $ref: '#/components/schemas/ValidationConfig'
+        hints:
+          type: array
+          items: { type: string }
+    DBTemplate:
+      type: object
+      properties:
+        id: { type: string }
+        title: { type: string }
+        description: { type: string }
+        level:
+          type: string
+          enum: [easy, medium, hard]
+        topics:
+          type: array
+          items: { type: string }
+        tables:
+          type: array
+          items:
+            type: object
+            additionalProperties: true
+        datasets:
+          type: array
+          items:
+            type: object
+            additionalProperties: true
+    PlaygroundChallenge:
+      type: object
+      properties:
+        id: { type: string }
+        templateId: { type: string }
+        title: { type: string }
+        description: { type: string }
+        difficulty:
+          type: string
+          enum: [easy, medium, hard]
+        topic: { type: string }
+        constructs:
+          type: array
+          items: { type: string }
+        datasetIds:
+          type: array
+          items: { type: string }
+        starterSql: { type: string }
+        expectedQuery: { type: string }
+        feedbackMode: { type: string }
+    CatalogData:
+      type: object
+      properties:
+        users:
+          type: array
+          items:
+            $ref: '#/components/schemas/User'
+        groups:
+          type: array
+          items:
+            $ref: '#/components/schemas/Group'
+        templates:
+          type: array
+          items:
+            $ref: '#/components/schemas/DBTemplate'
+        seminars:
+          type: array
+          items:
+            $ref: '#/components/schemas/Seminar'
+        tasks:
+          type: array
+          items:
+            $ref: '#/components/schemas/TaskDefinition'
+        playgroundChallenges:
+          type: array
+          items:
+            $ref: '#/components/schemas/PlaygroundChallenge'
+    PlatformRuntime:
+      type: object
+      description: |
+        Пользовательский runtime. Это сессионное состояние UI и журналов.
+        Полные каталоги задач, семинаров, шаблонов и пользователей теперь приходят отдельно в `catalog`.
+      properties:
+        isAuthenticated: { type: boolean }
+        currentUserId: { type: string }
+        sessionId: { type: string }
+        selectedSeminarByUser:
+          type: object
+          additionalProperties:
+            type: string
+        selectedTaskByUser:
+          type: object
+          additionalProperties:
+            type: string
+        drafts:
+          type: object
+          additionalProperties:
+            type: string
+        selectedPlaygroundTemplateId: { type: string }
+        selectedPlaygroundChallengeId: { type: string }
+        selectedPlaygroundDatasetId: { type: string }
+        seminarRuntime:
+          type: object
+          additionalProperties:
+            type: object
+            additionalProperties: true
+        seminarMeta:
+          type: object
+          additionalProperties:
+            type: object
+            additionalProperties: true
+        seminarStudentIds:
+          type: object
+          additionalProperties:
+            type: array
+            items: { type: string }
+        seminarTaskIds:
+          type: object
+          additionalProperties:
+            type: array
+            items: { type: string }
+        queryRuns:
+          type: array
+          items:
+            type: object
+            additionalProperties: true
+        submissions:
+          type: array
+          items:
+            type: object
+            additionalProperties: true
+        notifications:
+          type: array
+          items:
+            type: object
+            additionalProperties: true
+        eventLogs:
+          type: array
+          items:
+            type: object
+            additionalProperties: true
+        lastPickedStudentId:
+          type: string
+    LoginResponse:
+      type: object
+      properties:
+        token:
+          type: string
+        catalog:
+          $ref: '#/components/schemas/CatalogData'
+        runtime:
+          $ref: '#/components/schemas/PlatformRuntime'
+      required: [token, catalog, runtime]
+    RuntimeResponse:
+      type: object
+      properties:
+        catalog:
+          $ref: '#/components/schemas/CatalogData'
+        runtime:
+          $ref: '#/components/schemas/PlatformRuntime'
+      required: [catalog, runtime]

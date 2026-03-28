@@ -9,6 +9,8 @@
     "dev:server": "cd backend && go run .",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
+    "test:backend": "cd backend && go test .",
+    "test:ci": "npm run lint && npm run build && npm run test:backend",
     "preview": "vite preview",
     "start:server": "cd backend && go run ."
   },

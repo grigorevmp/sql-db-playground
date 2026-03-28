@@ -85,6 +85,8 @@ func main() {
 
 	mux := http.NewServeMux()
 	mux.HandleFunc("/api/health", application.handleHealth)
+	mux.HandleFunc("/api/openapi.yaml", application.handleOpenAPISpec)
+	mux.HandleFunc("/api/docs", application.handleAPIDocs)
 	mux.HandleFunc("/api/auth/login", application.handleLogin)
 	mux.HandleFunc("/api/bootstrap", application.withAuth(application.handleBootstrap))
 	mux.HandleFunc("/api/reset", application.withAuth(application.handleReset))
@@ -1400,6 +1402,22 @@ func (a *app) sendToClient(client *client, catalog CatalogData, runtime Platform
 		Catalog: catalog,
 		Runtime: runtime,
 	})
+}
+
+func (a *app) handleOpenAPISpec(w http.ResponseWriter, r *http.Request) {
+	if r.Method != http.MethodGet {
+		writeError(w, http.StatusMethodNotAllowed, "Метод не поддерживается.")
+		return
+	}
+	http.ServeFile(w, r, filepath.Join("..", "docs", "openapi.yaml"))
+}
+
+func (a *app) handleAPIDocs(w http.ResponseWriter, r *http.Request) {
+	if r.Method != http.MethodGet {
+		writeError(w, http.StatusMethodNotAllowed, "Метод не поддерживается.")
+		return
+	}
+	http.ServeFile(w, r, filepath.Join("..", "docs", "api-docs.html"))
 }
 
 func (a *app) handleStatic(w http.ResponseWriter, r *http.Request) {

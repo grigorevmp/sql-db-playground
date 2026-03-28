@@ -92,6 +92,18 @@
   серверный seed для пользователей, задач, шаблонов и runtime; в браузер напрямую не отгружается
 - [go.mod](/Users/grigorevmp/Downloads/app/backend/go.mod)
   Go module backend-сервиса
+- [docs/README.md](/Users/grigorevmp/Downloads/app/docs/README.md)
+  единая точка входа в документацию проекта
+- [frontend-client.md](/Users/grigorevmp/Downloads/app/docs/frontend-client.md)
+  схема клиентской части, граф навигации и описание экранов
+- [openapi.yaml](/Users/grigorevmp/Downloads/app/docs/openapi.yaml)
+  OpenAPI-спецификация backend API
+- [api-docs.html](/Users/grigorevmp/Downloads/app/docs/api-docs.html)
+  HTML-обзор backend API
+- [threat-model.md](/Users/grigorevmp/Downloads/app/docs/threat-model.md)
+  модель угроз, техники атак и остаточные риски
+- [testing.md](/Users/grigorevmp/Downloads/app/docs/testing.md)
+  обязательные тесты, покрытие CI и локальный запуск проверок
 - [docker-compose.prod.yml](/Users/grigorevmp/Downloads/app/docker-compose.prod.yml)
   production-compose со связкой `app + caddy`
 - [Caddyfile](/Users/grigorevmp/Downloads/app/deploy/Caddyfile)
@@ -156,6 +168,9 @@ npm run dev:client
 
 - frontend: `http://localhost:5173`
 - Go backend: `http://localhost:3001`
+- API docs: `http://localhost:3001/api/docs`
+- raw OpenAPI: `http://localhost:3001/api/openapi.yaml`
+- индекс документации: [docs/README.md](/Users/grigorevmp/Downloads/app/docs/README.md)
 
 Проверка:
 
@@ -164,6 +179,32 @@ npm run lint
 npm run build
 cd backend && go build .
 ```
+
+Быстрый прогон CI-чеков локально:
+
+```bash
+npm run test:ci
+```
+
+## GitHub CI
+
+Добавлен workflow:
+
+- [.github/workflows/ci.yml](/Users/grigorevmp/Downloads/app/.github/workflows/ci.yml)
+
+Он запускает два обязательных контура:
+
+- `Backend tests`
+  - `go test .`
+  - покрывает вход преподавателя, student-sanitization каталога, bootstrap по JWT, invalid token, CORS, role restrictions и раздачу API docs
+- `Frontend lint and build`
+  - `npm run lint`
+  - `npm run build`
+
+Серверные тесты находятся в:
+
+- [backend/main_test.go](/Users/grigorevmp/Downloads/app/backend/main_test.go)
+- подробное описание тестового контура: [docs/testing.md](/Users/grigorevmp/Downloads/app/docs/testing.md)
 
 ## Docker Compose
 

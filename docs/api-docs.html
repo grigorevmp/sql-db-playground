@@ -1,0 +1,149 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>IVT Playground API Docs</title>
+    <style>
+      :root {
+        color-scheme: light;
+        --bg: #f6f7fb;
+        --panel: #ffffff;
+        --line: #e5e7eb;
+        --text: #111827;
+        --soft: #6b7280;
+        --accent: #2563eb;
+      }
+
+      * { box-sizing: border-box; }
+
+      body {
+        margin: 0;
+        padding: 32px;
+        font: 16px/1.5 "Segoe UI", sans-serif;
+        background: var(--bg);
+        color: var(--text);
+      }
+
+      .wrap {
+        max-width: 1100px;
+        margin: 0 auto;
+        display: grid;
+        gap: 20px;
+      }
+
+      .card {
+        background: var(--panel);
+        border: 1px solid var(--line);
+        border-radius: 20px;
+        padding: 24px;
+      }
+
+      .eyebrow {
+        text-transform: uppercase;
+        letter-spacing: .14em;
+        font-size: 12px;
+        color: var(--soft);
+        font-weight: 700;
+      }
+
+      h1, h2 { margin: 0 0 10px; }
+      p { margin: 0; color: var(--soft); }
+
+      .grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+        gap: 12px;
+        margin-top: 16px;
+      }
+
+      .endpoint {
+        border: 1px solid var(--line);
+        border-radius: 16px;
+        padding: 16px;
+      }
+
+      code, pre {
+        font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+      }
+
+      code {
+        background: #f3f4f6;
+        padding: 2px 6px;
+        border-radius: 6px;
+      }
+
+      a {
+        color: var(--accent);
+        text-decoration: none;
+      }
+
+      ul {
+        margin: 12px 0 0;
+        padding-left: 18px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <section class="card">
+        <div class="eyebrow">API</div>
+        <h1>IVT Playground API</h1>
+        <p>Краткая документация по HTTP и WebSocket API текущего backend.</p>
+        <ul>
+          <li>Сырой OpenAPI YAML: <a href="/api/openapi.yaml">/api/openapi.yaml</a></li>
+          <li>Все защищённые HTTP-методы используют заголовок <code>Authorization: Bearer &lt;jwt&gt;</code></li>
+          <li>Live-обновления приходят по <code>/ws?token=&lt;jwt&gt;</code></li>
+        </ul>
+      </section>
+
+      <section class="card">
+        <div class="eyebrow">Endpoints</div>
+        <h2>Основные точки входа</h2>
+        <div class="grid">
+          <article class="endpoint">
+            <strong><code>GET /api/health</code></strong>
+            <p>Проверка доступности backend.</p>
+          </article>
+          <article class="endpoint">
+            <strong><code>POST /api/auth/login</code></strong>
+            <p>Вход преподавателя или студента. Возвращает <code>token</code>, <code>catalog</code>, <code>runtime</code>.</p>
+          </article>
+          <article class="endpoint">
+            <strong><code>GET /api/bootstrap</code></strong>
+            <p>Восстановление текущей сессии по JWT.</p>
+          </article>
+          <article class="endpoint">
+            <strong><code>POST /api/reset</code></strong>
+            <p>Сброс стенда к seed-состоянию. Доступно преподавателю и администратору.</p>
+          </article>
+          <article class="endpoint">
+            <strong><code>POST /api/actions/{action}</code></strong>
+            <p>Универсальная точка входа для UI-команд.</p>
+          </article>
+          <article class="endpoint">
+            <strong><code>GET /ws</code></strong>
+            <p>WebSocket live-обновлений runtime и catalog.</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="card">
+        <div class="eyebrow">Actions</div>
+        <h2>Поддерживаемые action-команды</h2>
+        <p>
+          <code>save-draft</code>, <code>select-seminar</code>, <code>select-task</code>,
+          <code>toggle-setting</code>, <code>toggle-seminar-status</code>, <code>pick-student</code>,
+          <code>update-seminar-meta</code>, <code>create-seminar</code>, <code>create-task</code>,
+          <code>assign-task</code>, <code>remove-task</code>, <code>create-group</code>,
+          <code>update-group</code>, <code>delete-group</code>, <code>create-user</code>,
+          <code>update-user</code>, <code>delete-user</code>, <code>select-playground-template</code>,
+          <code>select-playground-dataset</code>, <code>select-challenge</code>,
+          <code>run-seminar-query</code>, <code>submit-seminar-query</code>,
+          <code>run-playground-query</code>, <code>validate-playground-challenge</code>,
+          <code>import-template</code>.
+        </p>
+      </section>
+    </div>
+  </body>
+</html>
