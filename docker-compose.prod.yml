@@ -1,0 +1,45 @@
+services:
+  sql-seminar:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: sql-seminar-platform
+    restart: unless-stopped
+    environment:
+      PORT: 3001
+      JWT_SECRET: ${JWT_SECRET}
+      ALLOWED_ORIGINS: https://${DOMAIN}
+    expose:
+      - "3001"
+    volumes:
+      - sql-seminar-data:/app/server-data
+    networks:
+      - ivt-platform
+
+  caddy:
+    image: caddy:2.10.2
+    container_name: sql-seminar-caddy
+    restart: unless-stopped
+    environment:
+      DOMAIN: ${DOMAIN}
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./deploy/Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy-data:/data
+      - caddy-config:/config
+      - caddy-logs:/var/log/caddy
+    depends_on:
+      - sql-seminar
+    networks:
+      - ivt-platform
+
+volumes:
+  sql-seminar-data:
+  caddy-data:
+  caddy-config:
+  caddy-logs:
+
+networks:
+  ivt-platform:

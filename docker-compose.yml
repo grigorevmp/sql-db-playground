@@ -1,0 +1,17 @@
+services:
+  sql-seminar:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: sql-seminar-platform
+    restart: unless-stopped
+    environment:
+      PORT: 3001
+      JWT_SECRET: change-me-before-production
+    ports:
+      - "3001:3001"
+    volumes:
+      - sql-seminar-data:/app/server-data
+
+volumes:
+  sql-seminar-data:

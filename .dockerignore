@@ -1,0 +1,9 @@
+node_modules
+dist
+.git
+.gitignore
+README.md
+backend/backend
+server
+server-data
+npm-debug.log*

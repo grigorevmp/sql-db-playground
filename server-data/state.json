@@ -1,0 +1,122 @@
+{
+  "runtime": {
+    "isAuthenticated": false,
+    "currentUserId": "",
+    "sessionId": "",
+    "createdUsers": [],
+    "createdGroups": [],
+    "userOverrides": {
+      "admin-1": {
+        "id": "admin-1",
+        "fullName": "Platform Admin",
+        "login": "admin",
+        "passwordHash": "argon2id$v=19$m=65536,t=2,p=1$bg+HCghEPcXxN5wR7uk3CA$9dseFZpaKa2cvbdcrocOw0qg5N++3io2k41+fnz7q5U",
+        "role": "admin",
+        "createdAt": "2026-01-05T00:00:00.000Z"
+      }
+    },
+    "groupOverrides": {},
+    "deletedUserIds": [],
+    "deletedGroupIds": [],
+    "seminarMeta": {},
+    "seminarGroupIds": null,
+    "seminarStudentIds": {},
+    "seminarTaskIds": {},
+    "groupRosterOverrides": null,
+    "selectedSeminarByUser": {
+      "admin-1": "seminar-sql-bootcamp",
+      "student-1": "seminar-sql-bootcamp"
+    },
+    "selectedTaskByUser": {
+      "admin-1": "task-revenue",
+      "student-1": "task-revenue"
+    },
+    "drafts": {},
+    "selectedPlaygroundTemplateId": "",
+    "selectedPlaygroundChallengeId": "",
+    "selectedPlaygroundDatasetId": "",
+    "seminarRuntime": {
+      "seminar-joins-archive": {
+        "status": "closed",
+        "settings": {
+          "leaderboardEnabled": false,
+          "autoValidationEnabled": true,
+          "notificationsEnabled": true,
+          "diagnosticsVisible": false,
+          "referenceSolutionVisible": false,
+          "submissionsFrozen": true
+        }
+      },
+      "seminar-sql-bootcamp": {
+        "status": "live",
+        "settings": {
+          "leaderboardEnabled": true,
+          "autoValidationEnabled": true,
+          "notificationsEnabled": true,
+          "diagnosticsVisible": true,
+          "referenceSolutionVisible": false,
+          "submissionsFrozen": false
+        }
+      },
+      "seminar-window-functions": {
+        "status": "scheduled",
+        "settings": {
+          "leaderboardEnabled": true,
+          "autoValidationEnabled": true,
+          "notificationsEnabled": true,
+          "diagnosticsVisible": true,
+          "referenceSolutionVisible": false,
+          "submissionsFrozen": false
+        }
+      }
+    },
+    "importedTemplates": [],
+    "createdTasks": [],
+    "createdSeminars": [],
+    "queryRuns": [],
+    "submissions": [],
+    "notifications": [],
+    "eventLogs": [
+      {
+        "id": "event-3b51199-18a116a76ff20e90",
+        "userId": "student-1",
+        "role": "student",
+        "sessionId": "session-2a85b4f1-18a116a76b16f430",
+        "eventType": "auth.login",
+        "payload": {
+          "ip": "127.0.0.1",
+          "login": "kfadeev",
+          "mode": "student"
+        },
+        "createdAt": "2026-03-28T19:03:56Z"
+      },
+      {
+        "id": "event-1f7aa008-18a116a76ff6c980",
+        "userId": "admin-1",
+        "role": "admin",
+        "sessionId": "session-22e8c18c-18a116a76ff1d3f8",
+        "eventType": "auth.login",
+        "payload": {
+          "ip": "127.0.0.1",
+          "login": "admin",
+          "mode": "teacher"
+        },
+        "createdAt": "2026-03-28T19:03:56Z"
+      },
+      {
+        "id": "event-392591b-18a117ce1a4a93b8",
+        "userId": "admin-1",
+        "role": "admin",
+        "sessionId": "session-5152456-18a117ce1a497e60",
+        "eventType": "auth.login",
+        "payload": {
+          "ip": "127.0.0.1",
+          "login": "admin",
+          "mode": "teacher"
+        },
+        "createdAt": "2026-03-28T19:25:02Z"
+      }
+    ]
+  },
+  "userPlaygroundSelections": {}
+}

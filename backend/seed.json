@@ -1,0 +1,994 @@
+{
+  "groups": [
+    {
+      "id": "group-pi-22",
+      "title": "PI-22",
+      "stream": "DB Systems"
+    },
+    {
+      "id": "group-ds-11",
+      "title": "DS-11",
+      "stream": "Data Science"
+    }
+  ],
+  "users": [
+    {
+      "id": "teacher-1",
+      "fullName": "Dr. Irina Belova",
+      "login": "ibelova",
+      "passwordHash": "cde383eee8ee7a4400adf7a15f716f179a2eb97646b37e089eb8d6d04e663416",
+      "role": "teacher",
+      "createdAt": "2026-01-10T00:00:00.000Z"
+    },
+    {
+      "id": "admin-1",
+      "fullName": "Platform Admin",
+      "login": "admin",
+      "passwordHash": "74f6eb9d95f640cfdd5bd968924a810c12e26852db8b5abeb1d0395397731589",
+      "role": "admin",
+      "createdAt": "2026-01-05T00:00:00.000Z"
+    },
+    {
+      "id": "student-1",
+      "fullName": "Kirill Fadeev",
+      "login": "kfadeev",
+      "passwordHash": "703b0a3d6ad75b649a28adde7d83c6251da457549263bc7ff45ec709b0a8448b",
+      "role": "student",
+      "groupId": "group-pi-22",
+      "createdAt": "2026-02-01T00:00:00.000Z"
+    },
+    {
+      "id": "student-2",
+      "fullName": "Alina Nazarova",
+      "login": "anazarova",
+      "passwordHash": "703b0a3d6ad75b649a28adde7d83c6251da457549263bc7ff45ec709b0a8448b",
+      "role": "student",
+      "groupId": "group-pi-22",
+      "createdAt": "2026-02-01T00:00:00.000Z"
+    },
+    {
+      "id": "student-3",
+      "fullName": "Maksim Vetrov",
+      "login": "mvetrov",
+      "passwordHash": "703b0a3d6ad75b649a28adde7d83c6251da457549263bc7ff45ec709b0a8448b",
+      "role": "student",
+      "groupId": "group-pi-22",
+      "createdAt": "2026-02-01T00:00:00.000Z"
+    },
+    {
+      "id": "student-4",
+      "fullName": "Elena Shapoval",
+      "login": "eshapoval",
+      "passwordHash": "703b0a3d6ad75b649a28adde7d83c6251da457549263bc7ff45ec709b0a8448b",
+      "role": "student",
+      "groupId": "group-pi-22",
+      "createdAt": "2026-02-01T00:00:00.000Z"
+    },
+    {
+      "id": "student-5",
+      "fullName": "Pavel Morozov",
+      "login": "pmorozov",
+      "passwordHash": "703b0a3d6ad75b649a28adde7d83c6251da457549263bc7ff45ec709b0a8448b",
+      "role": "student",
+      "groupId": "group-pi-22",
+      "createdAt": "2026-02-01T00:00:00.000Z"
+    },
+    {
+      "id": "student-6",
+      "fullName": "Yana Egorova",
+      "login": "yegorova",
+      "passwordHash": "703b0a3d6ad75b649a28adde7d83c6251da457549263bc7ff45ec709b0a8448b",
+      "role": "student",
+      "groupId": "group-pi-22",
+      "createdAt": "2026-02-01T00:00:00.000Z"
+    }
+  ],
+  "templates": [
+    {
+      "id": "retail-lab",
+      "title": "Retail Analytics Lab",
+      "description": "Продажи, категории, регионы и рейтинг клиентов для семинаров по SELECT, JOIN, CTE и оконным функциям.",
+      "level": "medium",
+      "topics": [
+        "JOIN",
+        "GROUP BY",
+        "CTE",
+        "WINDOW"
+      ],
+      "datasets": [
+        {
+          "id": "retail-a",
+          "label": "Dataset A",
+          "description": "Опорный набор с paid/cancelled заказами и разнотипными категориями.",
+          "initSql": "\nCREATE TABLE regions (\n  id INTEGER PRIMARY KEY,\n  name TEXT NOT NULL\n);\n\nCREATE TABLE customers (\n  id INTEGER PRIMARY KEY,\n  full_name TEXT NOT NULL,\n  cohort TEXT NOT NULL,\n  region_id INTEGER NOT NULL,\n  FOREIGN KEY (region_id) REFERENCES regions(id)\n);\n\nCREATE TABLE products (\n  id INTEGER PRIMARY KEY,\n  name TEXT NOT NULL,\n  category TEXT NOT NULL,\n  base_price REAL NOT NULL\n);\n\nCREATE TABLE orders (\n  id INTEGER PRIMARY KEY,\n  customer_id INTEGER NOT NULL,\n  ordered_at TEXT NOT NULL,\n  status TEXT NOT NULL,\n  FOREIGN KEY (customer_id) REFERENCES customers(id)\n);\n\nCREATE TABLE order_items (\n  id INTEGER PRIMARY KEY,\n  order_id INTEGER NOT NULL,\n  product_id INTEGER NOT NULL,\n  quantity INTEGER NOT NULL,\n  unit_price REAL NOT NULL,\n  FOREIGN KEY (order_id) REFERENCES orders(id),\n  FOREIGN KEY (product_id) REFERENCES products(id)\n);\n\nCREATE TABLE order_status_audit (\n  id INTEGER PRIMARY KEY,\n  order_id INTEGER NOT NULL,\n  old_status TEXT NOT NULL,\n  new_status TEXT NOT NULL\n);\n\nINSERT INTO regions VALUES\n  (1, 'North'),\n  (2, 'South'),\n  (3, 'West');\n\nINSERT INTO customers VALUES\n  (1, 'Amina Petrova', 'A-01', 1),\n  (2, 'Lev Smirnov', 'A-01', 2),\n  (3, 'Daria Ivanova', 'A-02', 3),\n  (4, 'Ilya Sokolov', 'A-02', 1),\n  (5, 'Mila Orlova', 'A-03', 2);\n\nINSERT INTO products VALUES\n  (1, 'Notebook', 'Office', 40),\n  (2, 'Chair', 'Furniture', 110),\n  (3, 'Desk Lamp', 'Office', 60),\n  (4, 'Monitor', 'Electronics', 180),\n  (5, 'Standing Desk', 'Furniture', 320);\n\nINSERT INTO orders VALUES\n  (101, 1, '2026-03-01', 'paid'),\n  (102, 1, '2026-03-03', 'cancelled'),\n  (103, 2, '2026-03-04', 'paid'),\n  (104, 3, '2026-03-05', 'paid'),\n  (105, 4, '2026-03-07', 'paid'),\n  (106, 5, '2026-03-08', 'paid');\n\nINSERT INTO order_items VALUES\n  (1, 101, 1, 2, 40),\n  (2, 101, 3, 1, 60),\n  (3, 102, 2, 1, 110),\n  (4, 103, 2, 1, 110),\n  (5, 103, 4, 1, 180),\n  (6, 104, 1, 1, 40),\n  (7, 104, 3, 2, 55),\n  (8, 105, 5, 1, 320),\n  (9, 106, 1, 1, 40),\n  (10, 106, 2, 1, 105);\n"
+        },
+        {
+          "id": "retail-b",
+          "label": "Dataset B",
+          "description": "Скрытый тест с другой структурой выручки и распределением регионов.",
+          "initSql": "\nCREATE TABLE regions (\n  id INTEGER PRIMARY KEY,\n  name TEXT NOT NULL\n);\n\nCREATE TABLE customers (\n  id INTEGER PRIMARY KEY,\n  full_name TEXT NOT NULL,\n  cohort TEXT NOT NULL,\n  region_id INTEGER NOT NULL,\n  FOREIGN KEY (region_id) REFERENCES regions(id)\n);\n\nCREATE TABLE products (\n  id INTEGER PRIMARY KEY,\n  name TEXT NOT NULL,\n  category TEXT NOT NULL,\n  base_price REAL NOT NULL\n);\n\nCREATE TABLE orders (\n  id INTEGER PRIMARY KEY,\n  customer_id INTEGER NOT NULL,\n  ordered_at TEXT NOT NULL,\n  status TEXT NOT NULL,\n  FOREIGN KEY (customer_id) REFERENCES customers(id)\n);\n\nCREATE TABLE order_items (\n  id INTEGER PRIMARY KEY,\n  order_id INTEGER NOT NULL,\n  product_id INTEGER NOT NULL,\n  quantity INTEGER NOT NULL,\n  unit_price REAL NOT NULL,\n  FOREIGN KEY (order_id) REFERENCES orders(id),\n  FOREIGN KEY (product_id) REFERENCES products(id)\n);\n\nCREATE TABLE order_status_audit (\n  id INTEGER PRIMARY KEY,\n  order_id INTEGER NOT NULL,\n  old_status TEXT NOT NULL,\n  new_status TEXT NOT NULL\n);\n\nINSERT INTO regions VALUES\n  (1, 'North'),\n  (2, 'South'),\n  (3, 'West');\n\nINSERT INTO customers VALUES\n  (1, 'Amina Petrova', 'B-01', 3),\n  (2, 'Lev Smirnov', 'B-02', 1),\n  (3, 'Daria Ivanova', 'B-02', 2),\n  (4, 'Ilya Sokolov', 'B-03', 1),\n  (5, 'Mila Orlova', 'B-03', 2);\n\nINSERT INTO products VALUES\n  (1, 'Notebook', 'Office', 42),\n  (2, 'Chair', 'Furniture', 115),\n  (3, 'Desk Lamp', 'Office', 58),\n  (4, 'Monitor', 'Electronics', 190),\n  (5, 'Standing Desk', 'Furniture', 330);\n\nINSERT INTO orders VALUES\n  (201, 1, '2026-02-12', 'paid'),\n  (202, 2, '2026-02-13', 'paid'),\n  (203, 3, '2026-02-14', 'paid'),\n  (204, 4, '2026-02-15', 'cancelled'),\n  (205, 4, '2026-02-18', 'paid'),\n  (206, 5, '2026-02-19', 'paid');\n\nINSERT INTO order_items VALUES\n  (1, 201, 4, 1, 190),\n  (2, 201, 1, 1, 42),\n  (3, 202, 2, 1, 115),\n  (4, 202, 3, 2, 58),\n  (5, 203, 5, 1, 330),\n  (6, 204, 2, 1, 115),\n  (7, 205, 1, 1, 42),\n  (8, 205, 4, 1, 190),\n  (9, 206, 1, 2, 42),\n  (10, 206, 3, 1, 58);\n"
+        }
+      ],
+      "tables": [
+        {
+          "name": "regions",
+          "description": "Справочник регионов для витрины рейтинга.",
+          "position": {
+            "x": 40,
+            "y": 40
+          },
+          "columns": [
+            {
+              "name": "id",
+              "type": "INTEGER",
+              "isPrimaryKey": true
+            },
+            {
+              "name": "name",
+              "type": "TEXT"
+            }
+          ],
+          "sampleRows": [
+            [
+              "1",
+              "North"
+            ],
+            [
+              "2",
+              "South"
+            ]
+          ]
+        },
+        {
+          "name": "customers",
+          "description": "Студенты работают с когортами и региональной привязкой клиентов.",
+          "position": {
+            "x": 310,
+            "y": 40
+          },
+          "columns": [
+            {
+              "name": "id",
+              "type": "INTEGER",
+              "isPrimaryKey": true
+            },
+            {
+              "name": "full_name",
+              "type": "TEXT"
+            },
+            {
+              "name": "cohort",
+              "type": "TEXT"
+            },
+            {
+              "name": "region_id",
+              "type": "INTEGER",
+              "references": {
+                "table": "regions",
+                "column": "id"
+              }
+            }
+          ],
+          "sampleRows": [
+            [
+              "1",
+              "Amina Petrova",
+              "A-01",
+              "1"
+            ],
+            [
+              "2",
+              "Lev Smirnov",
+              "A-01",
+              "2"
+            ]
+          ]
+        },
+        {
+          "name": "orders",
+          "description": "Заказы с датой и статусом оплаты.",
+          "position": {
+            "x": 590,
+            "y": 40
+          },
+          "columns": [
+            {
+              "name": "id",
+              "type": "INTEGER",
+              "isPrimaryKey": true
+            },
+            {
+              "name": "customer_id",
+              "type": "INTEGER",
+              "references": {
+                "table": "customers",
+                "column": "id"
+              }
+            },
+            {
+              "name": "ordered_at",
+              "type": "TEXT"
+            },
+            {
+              "name": "status",
+              "type": "TEXT"
+            }
+          ],
+          "sampleRows": [
+            [
+              "101",
+              "1",
+              "2026-03-01",
+              "paid"
+            ],
+            [
+              "102",
+              "1",
+              "2026-03-03",
+              "cancelled"
+            ]
+          ]
+        },
+        {
+          "name": "products",
+          "description": "Каталог товаров с базовой ценой и категорией.",
+          "position": {
+            "x": 40,
+            "y": 300
+          },
+          "columns": [
+            {
+              "name": "id",
+              "type": "INTEGER",
+              "isPrimaryKey": true
+            },
+            {
+              "name": "name",
+              "type": "TEXT"
+            },
+            {
+              "name": "category",
+              "type": "TEXT"
+            },
+            {
+              "name": "base_price",
+              "type": "REAL"
+            }
+          ],
+          "sampleRows": [
+            [
+              "1",
+              "Notebook",
+              "Office",
+              "40"
+            ],
+            [
+              "2",
+              "Chair",
+              "Furniture",
+              "110"
+            ]
+          ]
+        },
+        {
+          "name": "order_items",
+          "description": "Строки заказов, которые используются во всех задачах на агрегацию.",
+          "position": {
+            "x": 400,
+            "y": 300
+          },
+          "columns": [
+            {
+              "name": "id",
+              "type": "INTEGER",
+              "isPrimaryKey": true
+            },
+            {
+              "name": "order_id",
+              "type": "INTEGER",
+              "references": {
+                "table": "orders",
+                "column": "id"
+              }
+            },
+            {
+              "name": "product_id",
+              "type": "INTEGER",
+              "references": {
+                "table": "products",
+                "column": "id"
+              }
+            },
+            {
+              "name": "quantity",
+              "type": "INTEGER"
+            },
+            {
+              "name": "unit_price",
+              "type": "REAL"
+            }
+          ],
+          "sampleRows": [
+            [
+              "1",
+              "101",
+              "1",
+              "2",
+              "40"
+            ],
+            [
+              "2",
+              "101",
+              "3",
+              "1",
+              "60"
+            ]
+          ]
+        },
+        {
+          "name": "order_status_audit",
+          "description": "Журнал изменений статуса заказа для задач на trigger.",
+          "position": {
+            "x": 760,
+            "y": 300
+          },
+          "columns": [
+            {
+              "name": "id",
+              "type": "INTEGER",
+              "isPrimaryKey": true
+            },
+            {
+              "name": "order_id",
+              "type": "INTEGER"
+            },
+            {
+              "name": "old_status",
+              "type": "TEXT"
+            },
+            {
+              "name": "new_status",
+              "type": "TEXT"
+            }
+          ],
+          "sampleRows": []
+        }
+      ]
+    },
+    {
+      "id": "academy-lab",
+      "title": "Academy Progress Lab",
+      "description": "Шаблон для свободной практики по рейтингам, средним баллам и анализу попыток.",
+      "level": "easy",
+      "topics": [
+        "SELECT",
+        "JOIN",
+        "WINDOW"
+      ],
+      "datasets": [
+        {
+          "id": "academy-a",
+          "label": "Dataset A",
+          "description": "Базовая академическая активность по когортам.",
+          "initSql": "\nCREATE TABLE cohorts (\n  id INTEGER PRIMARY KEY,\n  title TEXT NOT NULL\n);\n\nCREATE TABLE students (\n  id INTEGER PRIMARY KEY,\n  full_name TEXT NOT NULL,\n  cohort_id INTEGER NOT NULL,\n  FOREIGN KEY (cohort_id) REFERENCES cohorts(id)\n);\n\nCREATE TABLE modules (\n  id INTEGER PRIMARY KEY,\n  title TEXT NOT NULL,\n  track TEXT NOT NULL\n);\n\nCREATE TABLE attempts (\n  id INTEGER PRIMARY KEY,\n  student_id INTEGER NOT NULL,\n  module_id INTEGER NOT NULL,\n  score INTEGER NOT NULL,\n  submitted_at TEXT NOT NULL,\n  FOREIGN KEY (student_id) REFERENCES students(id),\n  FOREIGN KEY (module_id) REFERENCES modules(id)\n);\n\nINSERT INTO cohorts VALUES\n  (1, 'DS-11'),\n  (2, 'DS-12'),\n  (3, 'ML-21');\n\nINSERT INTO students VALUES\n  (1, 'Anna Volkova', 1),\n  (2, 'Nikita Egorov', 1),\n  (3, 'Sofia Lebedeva', 2),\n  (4, 'Roman Belov', 3),\n  (5, 'Artem Tarasov', 2);\n\nINSERT INTO modules VALUES\n  (1, 'SQL Basics', 'SQL'),\n  (2, 'Window Functions', 'SQL'),\n  (3, 'Data Viz', 'BI');\n\nINSERT INTO attempts VALUES\n  (1, 1, 1, 82, '2026-03-01'),\n  (2, 1, 2, 76, '2026-03-04'),\n  (3, 2, 1, 91, '2026-03-02'),\n  (4, 2, 2, 89, '2026-03-05'),\n  (5, 3, 1, 67, '2026-03-03'),\n  (6, 3, 2, 94, '2026-03-06'),\n  (7, 4, 1, 88, '2026-03-03'),\n  (8, 4, 3, 79, '2026-03-08'),\n  (9, 5, 2, 83, '2026-03-07');\n"
+        },
+        {
+          "id": "academy-b",
+          "label": "Dataset B",
+          "description": "Вариация датасета с другими когортами и результатами.",
+          "initSql": "\nCREATE TABLE cohorts (\n  id INTEGER PRIMARY KEY,\n  title TEXT NOT NULL\n);\n\nCREATE TABLE students (\n  id INTEGER PRIMARY KEY,\n  full_name TEXT NOT NULL,\n  cohort_id INTEGER NOT NULL,\n  FOREIGN KEY (cohort_id) REFERENCES cohorts(id)\n);\n\nCREATE TABLE modules (\n  id INTEGER PRIMARY KEY,\n  title TEXT NOT NULL,\n  track TEXT NOT NULL\n);\n\nCREATE TABLE attempts (\n  id INTEGER PRIMARY KEY,\n  student_id INTEGER NOT NULL,\n  module_id INTEGER NOT NULL,\n  score INTEGER NOT NULL,\n  submitted_at TEXT NOT NULL,\n  FOREIGN KEY (student_id) REFERENCES students(id),\n  FOREIGN KEY (module_id) REFERENCES modules(id)\n);\n\nINSERT INTO cohorts VALUES\n  (1, 'DS-13'),\n  (2, 'DS-14'),\n  (3, 'AI-31');\n\nINSERT INTO students VALUES\n  (1, 'Anna Volkova', 1),\n  (2, 'Nikita Egorov', 2),\n  (3, 'Sofia Lebedeva', 2),\n  (4, 'Roman Belov', 3),\n  (5, 'Artem Tarasov', 1);\n\nINSERT INTO modules VALUES\n  (1, 'SQL Basics', 'SQL'),\n  (2, 'Window Functions', 'SQL'),\n  (3, 'Pandas', 'Python');\n\nINSERT INTO attempts VALUES\n  (1, 1, 1, 85, '2026-03-11'),\n  (2, 1, 2, 88, '2026-03-13'),\n  (3, 2, 1, 73, '2026-03-12'),\n  (4, 2, 2, 81, '2026-03-14'),\n  (5, 3, 1, 95, '2026-03-12'),\n  (6, 4, 3, 87, '2026-03-15'),\n  (7, 5, 1, 77, '2026-03-13'),\n  (8, 5, 2, 90, '2026-03-15');\n"
+        }
+      ],
+      "tables": [
+        {
+          "name": "cohorts",
+          "description": "Потоки студентов.",
+          "position": {
+            "x": 40,
+            "y": 40
+          },
+          "columns": [
+            {
+              "name": "id",
+              "type": "INTEGER",
+              "isPrimaryKey": true
+            },
+            {
+              "name": "title",
+              "type": "TEXT"
+            }
+          ],
+          "sampleRows": [
+            [
+              "1",
+              "DS-11"
+            ],
+            [
+              "2",
+              "DS-12"
+            ]
+          ]
+        },
+        {
+          "name": "students",
+          "description": "Список студентов и их когорты.",
+          "position": {
+            "x": 320,
+            "y": 40
+          },
+          "columns": [
+            {
+              "name": "id",
+              "type": "INTEGER",
+              "isPrimaryKey": true
+            },
+            {
+              "name": "full_name",
+              "type": "TEXT"
+            },
+            {
+              "name": "cohort_id",
+              "type": "INTEGER",
+              "references": {
+                "table": "cohorts",
+                "column": "id"
+              }
+            }
+          ],
+          "sampleRows": [
+            [
+              "1",
+              "Anna Volkova",
+              "1"
+            ],
+            [
+              "2",
+              "Nikita Egorov",
+              "1"
+            ]
+          ]
+        },
+        {
+          "name": "modules",
+          "description": "Модули и треки.",
+          "position": {
+            "x": 610,
+            "y": 40
+          },
+          "columns": [
+            {
+              "name": "id",
+              "type": "INTEGER",
+              "isPrimaryKey": true
+            },
+            {
+              "name": "title",
+              "type": "TEXT"
+            },
+            {
+              "name": "track",
+              "type": "TEXT"
+            }
+          ],
+          "sampleRows": [
+            [
+              "1",
+              "SQL Basics",
+              "SQL"
+            ],
+            [
+              "2",
+              "Window Functions",
+              "SQL"
+            ]
+          ]
+        },
+        {
+          "name": "attempts",
+          "description": "История проверок и оценок.",
+          "position": {
+            "x": 260,
+            "y": 300
+          },
+          "columns": [
+            {
+              "name": "id",
+              "type": "INTEGER",
+              "isPrimaryKey": true
+            },
+            {
+              "name": "student_id",
+              "type": "INTEGER",
+              "references": {
+                "table": "students",
+                "column": "id"
+              }
+            },
+            {
+              "name": "module_id",
+              "type": "INTEGER",
+              "references": {
+                "table": "modules",
+                "column": "id"
+              }
+            },
+            {
+              "name": "score",
+              "type": "INTEGER"
+            },
+            {
+              "name": "submitted_at",
+              "type": "TEXT"
+            }
+          ],
+          "sampleRows": [
+            [
+              "1",
+              "1",
+              "1",
+              "82",
+              "2026-03-01"
+            ],
+            [
+              "2",
+              "1",
+              "2",
+              "76",
+              "2026-03-04"
+            ]
+          ]
+        }
+      ]
+    }
+  ],
+  "seminars": [
+    {
+      "id": "seminar-sql-bootcamp",
+      "title": "SQL Seminar: Multi-dataset Validation",
+      "description": "Семинарный режим с живым рейтингом, скрытыми тестами и мгновенной обратной связью по результату запроса.",
+      "groupId": "group-pi-22",
+      "teacherId": "teacher-1",
+      "templateId": "retail-lab",
+      "taskIds": [
+        "task-revenue",
+        "task-category-cte",
+        "task-region-rank"
+      ],
+      "studentIds": [
+        "student-1",
+        "student-2",
+        "student-3",
+        "student-4",
+        "student-5",
+        "student-6"
+      ],
+      "accessCode": "SQL-2204",
+      "startTime": "2026-03-28T09:30:00.000Z",
+      "endTime": "2026-03-28T11:00:00.000Z",
+      "status": "live",
+      "settings": {
+        "leaderboardEnabled": true,
+        "autoValidationEnabled": true,
+        "notificationsEnabled": true,
+        "diagnosticsVisible": true,
+        "referenceSolutionVisible": false,
+        "submissionsFrozen": false
+      }
+    },
+    {
+      "id": "seminar-window-functions",
+      "title": "SQL Seminar: Window Functions Sprint",
+      "description": "Запланированный семинар по оконным функциям и аналитическим витринам.",
+      "groupId": "group-pi-22",
+      "teacherId": "teacher-1",
+      "templateId": "academy-lab",
+      "taskIds": [
+        "task-revenue",
+        "task-category-cte",
+        "task-region-rank"
+      ],
+      "studentIds": [
+        "student-1",
+        "student-2",
+        "student-3",
+        "student-4",
+        "student-5",
+        "student-6"
+      ],
+      "accessCode": "WIN-3103",
+      "startTime": "2026-04-02T09:30:00.000Z",
+      "endTime": "2026-04-02T11:00:00.000Z",
+      "status": "scheduled",
+      "settings": {
+        "leaderboardEnabled": true,
+        "autoValidationEnabled": true,
+        "notificationsEnabled": true,
+        "diagnosticsVisible": true,
+        "referenceSolutionVisible": false,
+        "submissionsFrozen": false
+      }
+    },
+    {
+      "id": "seminar-joins-archive",
+      "title": "SQL Seminar: Join Foundations",
+      "description": "Архивный семинар с сохранённой статистикой и логами.",
+      "groupId": "group-pi-22",
+      "teacherId": "teacher-1",
+      "templateId": "retail-lab",
+      "taskIds": [
+        "task-revenue",
+        "task-category-cte",
+        "task-region-rank"
+      ],
+      "studentIds": [
+        "student-1",
+        "student-2",
+        "student-3",
+        "student-4",
+        "student-5",
+        "student-6"
+      ],
+      "accessCode": "JOIN-1503",
+      "startTime": "2026-03-15T09:30:00.000Z",
+      "endTime": "2026-03-15T11:00:00.000Z",
+      "status": "closed",
+      "settings": {
+        "leaderboardEnabled": false,
+        "autoValidationEnabled": true,
+        "notificationsEnabled": true,
+        "diagnosticsVisible": false,
+        "referenceSolutionVisible": false,
+        "submissionsFrozen": true
+      }
+    }
+  ],
+  "tasks": [
+    {
+      "id": "task-revenue",
+      "seminarId": "seminar-sql-bootcamp",
+      "title": "Выручка по клиентам",
+      "description": "Верните `full_name` и `paid_revenue` для клиентов, у которых суммарная выручка по оплаченным заказам не меньше 120. Сортировка: `paid_revenue DESC`, затем `full_name ASC`.",
+      "difficulty": "easy",
+      "taskType": "SELECT + JOIN + HAVING",
+      "constructs": [
+        "SELECT",
+        "JOIN",
+        "GROUP BY",
+        "HAVING"
+      ],
+      "validationMode": "result-match",
+      "templateId": "retail-lab",
+      "datasetIds": [
+        "retail-a",
+        "retail-b"
+      ],
+      "starterSql": "SELECT\n  c.full_name,\n  SUM(oi.quantity * oi.unit_price) AS paid_revenue\nFROM customers c\nJOIN orders o ON o.customer_id = c.id\nJOIN order_items oi ON oi.order_id = o.id\nWHERE o.status = 'paid'\nGROUP BY c.id, c.full_name\nHAVING SUM(oi.quantity * oi.unit_price) >= 120\nORDER BY paid_revenue DESC, c.full_name ASC;",
+      "expectedQuery": "SELECT\n  c.full_name,\n  ROUND(SUM(oi.quantity * oi.unit_price), 2) AS paid_revenue\nFROM customers c\nJOIN orders o ON o.customer_id = c.id\nJOIN order_items oi ON oi.order_id = o.id\nWHERE o.status = 'paid'\nGROUP BY c.id, c.full_name\nHAVING SUM(oi.quantity * oi.unit_price) >= 120\nORDER BY paid_revenue DESC, c.full_name ASC;",
+      "validationConfig": {
+        "orderMatters": true,
+        "columnNamesMatter": true,
+        "numericTolerance": 0.001,
+        "maxExecutionMs": 3000,
+        "maxResultRows": 50,
+        "forbiddenKeywords": [
+          "INSERT",
+          "UPDATE",
+          "DELETE",
+          "DROP",
+          "ALTER",
+          "ATTACH",
+          "DETACH",
+          "PRAGMA"
+        ]
+      },
+      "hints": [
+        "Фильтруйте только `paid` заказы.",
+        "Сумму считайте по `quantity * unit_price`.",
+        "HAVING должен отфильтровать клиентов по порогу выручки."
+      ]
+    },
+    {
+      "id": "task-category-cte",
+      "seminarId": "seminar-sql-bootcamp",
+      "title": "Категории с помощью CTE",
+      "description": "С помощью CTE соберите оплаченные строки заказов и верните `category`, `total_orders`, `total_revenue` для категорий с выручкой не меньше 150. Сортировка по выручке убыв., затем по названию категории.",
+      "difficulty": "medium",
+      "taskType": "CTE + AGGREGATION",
+      "constructs": [
+        "CTE",
+        "GROUP BY",
+        "COUNT DISTINCT"
+      ],
+      "validationMode": "result-match",
+      "templateId": "retail-lab",
+      "datasetIds": [
+        "retail-a",
+        "retail-b"
+      ],
+      "starterSql": "WITH paid_lines AS (\n  SELECT\n    p.category,\n    o.id AS order_id,\n    oi.quantity * oi.unit_price AS line_revenue\n  FROM orders o\n  JOIN order_items oi ON oi.order_id = o.id\n  JOIN products p ON p.id = oi.product_id\n  WHERE o.status = 'paid'\n)\nSELECT\n  category,\n  COUNT(DISTINCT order_id) AS total_orders,\n  ROUND(SUM(line_revenue), 2) AS total_revenue\nFROM paid_lines\nGROUP BY category\nHAVING SUM(line_revenue) >= 150\nORDER BY total_revenue DESC, category ASC;",
+      "expectedQuery": "WITH paid_lines AS (\n  SELECT\n    p.category,\n    o.id AS order_id,\n    oi.quantity * oi.unit_price AS line_revenue\n  FROM orders o\n  JOIN order_items oi ON oi.order_id = o.id\n  JOIN products p ON p.id = oi.product_id\n  WHERE o.status = 'paid'\n)\nSELECT\n  category,\n  COUNT(DISTINCT order_id) AS total_orders,\n  ROUND(SUM(line_revenue), 2) AS total_revenue\nFROM paid_lines\nGROUP BY category\nHAVING SUM(line_revenue) >= 150\nORDER BY total_revenue DESC, category ASC;",
+      "validationConfig": {
+        "orderMatters": true,
+        "columnNamesMatter": true,
+        "numericTolerance": 0.001,
+        "maxExecutionMs": 4000,
+        "maxResultRows": 50,
+        "forbiddenKeywords": [
+          "INSERT",
+          "UPDATE",
+          "DELETE",
+          "DROP",
+          "ALTER",
+          "ATTACH",
+          "DETACH",
+          "PRAGMA"
+        ]
+      },
+      "hints": [
+        "В CTE удобно подготовить строки выручки.",
+        "Нужен `COUNT(DISTINCT order_id)`.",
+        "Проверьте фильтр HAVING на двух датасетах."
+      ]
+    },
+    {
+      "id": "task-region-rank",
+      "seminarId": "seminar-sql-bootcamp",
+      "title": "Рейтинг регионов",
+      "description": "Постройте рейтинг регионов по оплаченной выручке. Верните `region_name`, `paid_revenue`, `revenue_rank`. Используйте `DENSE_RANK()` и отсортируйте по рангу, затем по имени региона.",
+      "difficulty": "hard",
+      "taskType": "WINDOW FUNCTION",
+      "constructs": [
+        "CTE",
+        "WINDOW",
+        "DENSE_RANK"
+      ],
+      "validationMode": "result-match",
+      "templateId": "retail-lab",
+      "datasetIds": [
+        "retail-a",
+        "retail-b"
+      ],
+      "starterSql": "WITH region_revenue AS (\n  SELECT\n    r.name AS region_name,\n    SUM(oi.quantity * oi.unit_price) AS paid_revenue\n  FROM regions r\n  JOIN customers c ON c.region_id = r.id\n  JOIN orders o ON o.customer_id = c.id\n  JOIN order_items oi ON oi.order_id = o.id\n  WHERE o.status = 'paid'\n  GROUP BY r.id, r.name\n)\nSELECT\n  region_name,\n  ROUND(paid_revenue, 2) AS paid_revenue,\n  DENSE_RANK() OVER (ORDER BY paid_revenue DESC) AS revenue_rank\nFROM region_revenue\nORDER BY revenue_rank ASC, region_name ASC;",
+      "expectedQuery": "WITH region_revenue AS (\n  SELECT\n    r.name AS region_name,\n    SUM(oi.quantity * oi.unit_price) AS paid_revenue\n  FROM regions r\n  JOIN customers c ON c.region_id = r.id\n  JOIN orders o ON o.customer_id = c.id\n  JOIN order_items oi ON oi.order_id = o.id\n  WHERE o.status = 'paid'\n  GROUP BY r.id, r.name\n)\nSELECT\n  region_name,\n  ROUND(paid_revenue, 2) AS paid_revenue,\n  DENSE_RANK() OVER (ORDER BY paid_revenue DESC) AS revenue_rank\nFROM region_revenue\nORDER BY revenue_rank ASC, region_name ASC;",
+      "validationConfig": {
+        "orderMatters": true,
+        "columnNamesMatter": true,
+        "numericTolerance": 0.001,
+        "maxExecutionMs": 5000,
+        "maxResultRows": 50,
+        "forbiddenKeywords": [
+          "INSERT",
+          "UPDATE",
+          "DELETE",
+          "DROP",
+          "ALTER",
+          "ATTACH",
+          "DETACH",
+          "PRAGMA"
+        ]
+      },
+      "hints": [
+        "Сначала агрегируйте выручку по регионам.",
+        "Окно должно ранжировать именно агрегированный результат.",
+        "Ранги одинаковой выручки не должны иметь пропусков."
+      ]
+    }
+  ],
+  "playgroundChallenges": [
+    {
+      "id": "pg-academy-cohorts",
+      "templateId": "academy-lab",
+      "title": "Средний балл по когортам",
+      "description": "Верните `cohort_title` и `avg_score` для когорт, у которых средний балл по всем попыткам больше 80. Сортировка по `avg_score DESC`.",
+      "difficulty": "easy",
+      "topic": "Analytics",
+      "constructs": [
+        "JOIN",
+        "GROUP BY"
+      ],
+      "datasetIds": [
+        "academy-a",
+        "academy-b"
+      ],
+      "starterSql": "SELECT\n  c.title AS cohort_title,\n  ROUND(AVG(a.score), 2) AS avg_score\nFROM cohorts c\nJOIN students s ON s.cohort_id = c.id\nJOIN attempts a ON a.student_id = s.id\nGROUP BY c.id, c.title\nHAVING AVG(a.score) > 80\nORDER BY avg_score DESC;",
+      "expectedQuery": "SELECT\n  c.title AS cohort_title,\n  ROUND(AVG(a.score), 2) AS avg_score\nFROM cohorts c\nJOIN students s ON s.cohort_id = c.id\nJOIN attempts a ON a.student_id = s.id\nGROUP BY c.id, c.title\nHAVING AVG(a.score) > 80\nORDER BY avg_score DESC;",
+      "feedbackMode": "preview"
+    },
+    {
+      "id": "pg-retail-top-customers",
+      "templateId": "retail-lab",
+      "title": "Топ клиентов по выручке",
+      "description": "Покажите 3 лучших клиентов по оплаченной выручке: `full_name`, `paid_revenue`.",
+      "difficulty": "medium",
+      "topic": "Sales",
+      "constructs": [
+        "JOIN",
+        "GROUP BY",
+        "LIMIT"
+      ],
+      "datasetIds": [
+        "retail-a",
+        "retail-b"
+      ],
+      "starterSql": "SELECT\n  c.full_name,\n  ROUND(SUM(oi.quantity * oi.unit_price), 2) AS paid_revenue\nFROM customers c\nJOIN orders o ON o.customer_id = c.id\nJOIN order_items oi ON oi.order_id = o.id\nWHERE o.status = 'paid'\nGROUP BY c.id, c.full_name\nORDER BY paid_revenue DESC, c.full_name ASC\nLIMIT 3;",
+      "expectedQuery": "SELECT\n  c.full_name,\n  ROUND(SUM(oi.quantity * oi.unit_price), 2) AS paid_revenue\nFROM customers c\nJOIN orders o ON o.customer_id = c.id\nJOIN order_items oi ON oi.order_id = o.id\nWHERE o.status = 'paid'\nGROUP BY c.id, c.full_name\nORDER BY paid_revenue DESC, c.full_name ASC\nLIMIT 3;",
+      "feedbackMode": "row-count"
+    },
+    {
+      "id": "pg-academy-rank",
+      "templateId": "academy-lab",
+      "title": "Рейтинг студентов внутри когорты",
+      "description": "Рассчитайте средний балл студента и ранг внутри когорты. Верните `cohort_title`, `full_name`, `avg_score`, `cohort_rank`.",
+      "difficulty": "hard",
+      "topic": "Window Functions",
+      "constructs": [
+        "CTE",
+        "WINDOW",
+        "DENSE_RANK"
+      ],
+      "datasetIds": [
+        "academy-a",
+        "academy-b"
+      ],
+      "starterSql": "WITH student_avg AS (\n  SELECT\n    c.title AS cohort_title,\n    s.full_name,\n    AVG(a.score) AS avg_score\n  FROM students s\n  JOIN cohorts c ON c.id = s.cohort_id\n  JOIN attempts a ON a.student_id = s.id\n  GROUP BY c.id, c.title, s.id, s.full_name\n)\nSELECT\n  cohort_title,\n  full_name,\n  ROUND(avg_score, 2) AS avg_score,\n  DENSE_RANK() OVER (\n    PARTITION BY cohort_title\n    ORDER BY avg_score DESC\n  ) AS cohort_rank\nFROM student_avg\nORDER BY cohort_title ASC, cohort_rank ASC, full_name ASC;",
+      "expectedQuery": "WITH student_avg AS (\n  SELECT\n    c.title AS cohort_title,\n    s.full_name,\n    AVG(a.score) AS avg_score\n  FROM students s\n  JOIN cohorts c ON c.id = s.cohort_id\n  JOIN attempts a ON a.student_id = s.id\n  GROUP BY c.id, c.title, s.id, s.full_name\n)\nSELECT\n  cohort_title,\n  full_name,\n  ROUND(avg_score, 2) AS avg_score,\n  DENSE_RANK() OVER (\n    PARTITION BY cohort_title\n    ORDER BY avg_score DESC\n  ) AS cohort_rank\nFROM student_avg\nORDER BY cohort_title ASC, cohort_rank ASC, full_name ASC;",
+      "feedbackMode": "match-only"
+    },
+    {
+      "id": "pg-retail-view-paid-orders",
+      "templateId": "retail-lab",
+      "title": "Создать VIEW для оплаченных заказов",
+      "description": "Создайте `VIEW paid_order_revenue_view` с колонками `order_id`, `customer_name`, `paid_revenue` для оплаченных заказов. Проверка смотрит объект и сравнивает содержимое view.",
+      "difficulty": "medium",
+      "topic": "DDL",
+      "constructs": [
+        "VIEW",
+        "JOIN",
+        "GROUP BY"
+      ],
+      "datasetIds": [
+        "retail-a",
+        "retail-b"
+      ],
+      "starterSql": "CREATE VIEW paid_order_revenue_view AS\nSELECT\n  o.id AS order_id,\n  c.full_name AS customer_name,\n  ROUND(SUM(oi.quantity * oi.unit_price), 2) AS paid_revenue\nFROM orders o\nJOIN customers c ON c.id = o.customer_id\nJOIN order_items oi ON oi.order_id = o.id\nWHERE o.status = 'paid'\nGROUP BY o.id, c.full_name;",
+      "expectedQuery": "SELECT\n  o.id AS order_id,\n  c.full_name AS customer_name,\n  ROUND(SUM(oi.quantity * oi.unit_price), 2) AS paid_revenue\nFROM orders o\nJOIN customers c ON c.id = o.customer_id\nJOIN order_items oi ON oi.order_id = o.id\nWHERE o.status = 'paid'\nGROUP BY o.id, c.full_name\nORDER BY order_id ASC;",
+      "feedbackMode": "preview",
+      "validationMode": "ddl-object",
+      "validationSpec": {
+        "ddl": {
+          "objectType": "view",
+          "objectName": "paid_order_revenue_view",
+          "definitionMustInclude": [
+            "paid_order_revenue_view",
+            "select",
+            "o.status"
+          ],
+          "verificationQuery": "SELECT * FROM paid_order_revenue_view ORDER BY order_id ASC;",
+          "verificationExpectedQuery": "SELECT\n  o.id AS order_id,\n  c.full_name AS customer_name,\n  ROUND(SUM(oi.quantity * oi.unit_price), 2) AS paid_revenue\nFROM orders o\nJOIN customers c ON c.id = o.customer_id\nJOIN order_items oi ON oi.order_id = o.id\nWHERE o.status = 'paid'\nGROUP BY o.id, c.full_name\nORDER BY order_id ASC;"
+        }
+      }
+    },
+    {
+      "id": "pg-retail-trigger-audit",
+      "templateId": "retail-lab",
+      "title": "Создать TRIGGER аудита статусов",
+      "description": "Создайте `TRIGGER trg_orders_status_audit`, который после изменения `orders.status` пишет строку в `order_status_audit(order_id, old_status, new_status)`.",
+      "difficulty": "hard",
+      "topic": "DDL",
+      "constructs": [
+        "TRIGGER"
+      ],
+      "datasetIds": [
+        "retail-a",
+        "retail-b"
+      ],
+      "starterSql": "CREATE TRIGGER trg_orders_status_audit\nAFTER UPDATE OF status ON orders\nFOR EACH ROW\nWHEN OLD.status <> NEW.status\nBEGIN\n  INSERT INTO order_status_audit(order_id, old_status, new_status)\n  VALUES (OLD.id, OLD.status, NEW.status);\nEND;",
+      "expectedQuery": "SELECT order_id, old_status, new_status\nFROM order_status_audit\nORDER BY order_id ASC;",
+      "feedbackMode": "preview",
+      "validationMode": "ddl-object",
+      "validationSpec": {
+        "ddl": {
+          "objectType": "trigger",
+          "objectName": "trg_orders_status_audit",
+          "definitionMustInclude": [
+            "after update",
+            "insert into order_status_audit"
+          ],
+          "simulationSql": [
+            "UPDATE orders SET status = 'archived' WHERE id = (SELECT MIN(id) FROM orders);"
+          ],
+          "verificationQuery": "SELECT order_id, old_status, new_status FROM order_status_audit ORDER BY order_id ASC;",
+          "verificationExpectedQuery": "SELECT MIN(id) AS order_id, 'paid' AS old_status, 'archived' AS new_status\nFROM orders;"
+        }
+      }
+    },
+    {
+      "id": "pg-retail-index-plan",
+      "templateId": "retail-lab",
+      "title": "Индекс и EXPLAIN QUERY PLAN",
+      "description": "Создайте индекс `idx_orders_customer_status` по `(customer_id, status)` и добейтесь, чтобы план поиска по клиенту и статусу использовал индекс.",
+      "difficulty": "hard",
+      "topic": "Optimization",
+      "constructs": [
+        "INDEX",
+        "EXPLAIN"
+      ],
+      "datasetIds": [
+        "retail-a",
+        "retail-b"
+      ],
+      "starterSql": "CREATE INDEX idx_orders_customer_status\nON orders(customer_id, status);",
+      "expectedQuery": "EXPLAIN QUERY PLAN SELECT * FROM orders WHERE customer_id = 1 AND status = 'paid';",
+      "feedbackMode": "preview",
+      "validationMode": "explain-plan",
+      "validationSpec": {
+        "ddl": {
+          "objectType": "index",
+          "objectName": "idx_orders_customer_status"
+        },
+        "explain": {
+          "targetSql": "SELECT * FROM orders WHERE customer_id = 1 AND status = 'paid'",
+          "requiredPlanKeywords": [
+            "index",
+            "idx_orders_customer_status"
+          ]
+        }
+      }
+    }
+  ],
+  "runtime": {
+    "isAuthenticated": false,
+    "currentUserId": "",
+    "sessionId": "",
+    "seminarMeta": {},
+    "seminarTaskIds": {},
+    "selectedSeminarByUser": {},
+    "selectedTaskByUser": {},
+    "drafts": {},
+    "selectedPlaygroundTemplateId": "",
+    "selectedPlaygroundChallengeId": "",
+    "selectedPlaygroundDatasetId": "",
+    "seminarRuntime": {
+      "seminar-sql-bootcamp": {
+        "status": "live",
+        "settings": {
+          "leaderboardEnabled": true,
+          "autoValidationEnabled": true,
+          "notificationsEnabled": true,
+          "diagnosticsVisible": true,
+          "referenceSolutionVisible": false,
+          "submissionsFrozen": false
+        }
+      },
+      "seminar-window-functions": {
+        "status": "scheduled",
+        "settings": {
+          "leaderboardEnabled": true,
+          "autoValidationEnabled": true,
+          "notificationsEnabled": true,
+          "diagnosticsVisible": true,
+          "referenceSolutionVisible": false,
+          "submissionsFrozen": false
+        }
+      },
+      "seminar-joins-archive": {
+        "status": "closed",
+        "settings": {
+          "leaderboardEnabled": false,
+          "autoValidationEnabled": true,
+          "notificationsEnabled": true,
+          "diagnosticsVisible": false,
+          "referenceSolutionVisible": false,
+          "submissionsFrozen": true
+        }
+      }
+    },
+    "importedTemplates": [],
+    "createdTasks": [],
+    "createdSeminars": [],
+    "queryRuns": [],
+    "submissions": [],
+    "notifications": [],
+    "eventLogs": []
+  }
+}
